@@ -1001,6 +1001,12 @@ let currentGame = {
     players: []
 };
 
+// Statistics tracking
+let gameStats = {
+    gamesStarted: 0,
+    territoriesTracked: 0
+};
+
 // DOM elements
 const mapSelect = document.getElementById('mapSelect');
 const playerCountSelect = document.getElementById('playerCount');
@@ -1011,12 +1017,79 @@ const setupSection = document.getElementById('setupSection');
 const gameSection = document.getElementById('gameSection');
 const playersContainer = document.getElementById('playersContainer');
 const animatedTitle = document.getElementById('animatedTitle');
+const visitorCount = document.getElementById('visitorCount');
+const gamesStarted = document.getElementById('gamesStarted');
+const territoriesTracked = document.getElementById('territoriesTracked');
 
 // Initialize the app
 function init() {
     populateMapSelect();
     setupEventListeners();
     startTitleAnimation();
+    loadStats();
+    updateVisitorCount();
+    trackPageView();
+}
+
+// Track page view using external service
+function trackPageView() {
+    // Using a simple counter service - you can replace this with any analytics service
+    const counterUrl = 'https://api.countapi.xyz/hit/risk-territory-calculator/visits';
+    
+    fetch(counterUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.value) {
+                visitorCount.textContent = data.value.toLocaleString();
+            }
+        })
+        .catch(error => {
+            console.log('Visitor counter service unavailable, using local fallback');
+            updateVisitorCountLocal();
+        });
+}
+
+// Local fallback for visitor count
+function updateVisitorCountLocal() {
+    const today = new Date().toDateString();
+    const visitData = JSON.parse(localStorage.getItem('riskCalculatorVisits') || '{}');
+    
+    if (!visitData[today]) {
+        visitData[today] = 0;
+    }
+    visitData[today]++;
+    
+    localStorage.setItem('riskCalculatorVisits', JSON.stringify(visitData));
+    
+    const totalVisits = Object.values(visitData).reduce((sum, count) => sum + count, 0);
+    visitorCount.textContent = totalVisits.toLocaleString();
+}
+
+// Load statistics from localStorage
+function loadStats() {
+    const savedStats = localStorage.getItem('riskCalculatorStats');
+    if (savedStats) {
+        gameStats = JSON.parse(savedStats);
+    }
+    updateStatsDisplay();
+}
+
+// Save statistics to localStorage
+function saveStats() {
+    localStorage.setItem('riskCalculatorStats', JSON.stringify(gameStats));
+    updateStatsDisplay();
+}
+
+// Update statistics display
+function updateStatsDisplay() {
+    gamesStarted.textContent = gameStats.gamesStarted.toLocaleString();
+    territoriesTracked.textContent = gameStats.territoriesTracked.toLocaleString();
+}
+
+// Update visitor count using external service
+function updateVisitorCount() {
+    // This function is now handled by trackPageView()
+    // Keeping for backward compatibility
 }
 
 // Start the animated title
@@ -1107,6 +1180,11 @@ function startGame() {
             territories: territories
         });
     }
+
+    // Update statistics
+    gameStats.gamesStarted++;
+    gameStats.territoriesTracked += availableTerritories;
+    saveStats();
 
     // Update UI
     updateGameInfo();
