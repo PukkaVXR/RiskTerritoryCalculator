@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Territory Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Risk Territory Calculator</h1>
+            <div class="animated-title" id="animatedTitle"></div>
+            <p>Track troop counts and territory distribution in your Risk game</p>
+        </header>
+
+        <div class="setup-section" id="setupSection">
+            <h2>Game Setup</h2>
+            <div class="setup-form">
+                <div class="form-group">
+                    <label for="mapSelect">Select Map:</label>
+                    <select id="mapSelect" required>
+                        <option value="">Choose a map...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="playerCount">Number of Players:</label>
+                    <select id="playerCount" required>
+                        <option value="">Select players...</option>
+                        <option value="2">2 Players</option>
+                        <option value="3">3 Players</option>
+                        <option value="4">4 Players</option>
+                        <option value="5">5 Players</option>
+                        <option value="6">6 Players</option>
+                    </select>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="blizzardsEnabled">
+                        <span class="checkmark"></span>
+                        Blizzards Enabled
+                    </label>
+                </div>
+
+                <button id="startGameBtn" class="btn-primary">Start Game</button>
+            </div>
+        </div>
+
+        <div class="game-section" id="gameSection" style="display: none;">
+            <h2>Territory Distribution</h2>
+            <div class="game-info">
+                <div class="info-item">
+                    <span class="label">Map:</span>
+                    <span id="currentMap"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Players:</span>
+                    <span id="currentPlayers"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Blizzards:</span>
+                    <span id="currentBlizzards"></span>
+                </div>
+            </div>
+
+            <div class="players-container" id="playersContainer">
+                <!-- Players will be dynamically generated here -->
+            </div>
+
+            <button id="resetGameBtn" class="btn-secondary">Reset Game</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
